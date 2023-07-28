@@ -1,8 +1,8 @@
 <template>
     <div>
         <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" :expand-on-click-node="false"
-            show-checkbox :node-key="catId" :default-expended-keys="expandedKey"><span class="custom-tree-node"
-                slot-scope="{ node, data }">
+            show-checkbox :node-key="catId" :default-expended-keys="expandedKey" draggable="true"
+            :allow-drop="allowDrop"><span class="custom-tree-node" slot-scope="{ node, data }">
                 <span>{{ node.label }}</span>
                 <span>
                     <el-button v-if="node.level <= 2" type="text" size="mini" @click="() => append(data)">
@@ -53,8 +53,11 @@ export default {
     props: {},
     data() {
         return {
+            // 主题
             title: "",
             data: [],
+            //最大深度
+            maxLevel: 0,
             //修改还是添加
             dialogType: "",
             // 默认展开的菜单id
@@ -98,6 +101,7 @@ export default {
                 this.category.parentCid = data.data.parentCid;
             })
         },
+
         addCategory() {
             console.log("提交的数据是:")
             this.$http({
@@ -204,6 +208,34 @@ export default {
 
             })
         },
+        countNodeLevel(node) {
+            // 找到所有子节点的最大深度
+            if (node.children != null && node.childNodes.length > 0) {
+                for (let i = 0; i < node.childNodes.length; i++) {
+                    if (node.childNodes[i].level > this.maxLevel) {
+                        this.maxLevel = node.childNodes[i].level;
+                    }
+                    this.countNodeLevel(node.childNodes[i]);
+                }
+            }
+        },
+        // TODO : 拖动逻辑有点问题
+        allowDrop(draggingNode, dropNode, type) {
+            // 被拖动的当前界定啊以及父节点，总层数不能大于3
+            console.log("拖动:", draggingNode, dropNode, type);
+            this.countNodeLevel(draggingNode);
+            console.log(this.maxLevel, "移动情况是:", type);
+
+            //当前正在拖动的节点加上父节点不大于3即可
+            let deep = this.maxLevel - draggingNode.data.catLevel + 1;
+            console.log("深度:", deep);
+            if (type == "inner") {
+                return deep + dropNode.level <= 3;
+            } else {
+                return deep + dropNode.parent.level <= 3;
+            }
+        },
+
     },
 
     //计算属性 类似于 data 概念
