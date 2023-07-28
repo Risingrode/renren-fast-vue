@@ -1,5 +1,17 @@
 <template>
-    <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+    <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" :expand-on-click-node="false" show-checkbox
+        :node-key="catId"><span class="custom-tree-node" slot-scope="{ node, data }">
+            <span>{{ node.label }}</span>
+            <span>
+                <el-button v-if="node.level <= 2" type="text" size="mini" @click="() => append(data)">
+                    Append
+                </el-button>
+                <el-button v-if="data.children.length == 0" type="text" size="mini" @click="() => remove(node, data)">
+                    Delete
+                </el-button>
+            </span>
+        </span>
+    </el-tree>
 </template>
 
 <script>
@@ -11,24 +23,40 @@ export default {
     components: {},
     props: {},
     data() {
-
+        return {
+            data: [],
+            defaultProps: {
+                children: 'children',
+                label: 'name'
+            }
+        };
     },
     methods: {
-        handleNodeClick(data) {
-            console.log(data);
-        },
+        // handleNodeClick(data) {
+        //     console.log(data);
+        // },
         getMenus() {
             this.$http({
                 url: this.$http.adornUrl('/product/category/list/tree'),
                 method: 'get',
             }).then(({ data }) => {
                 if (data && data.code === 0) {
-                    this.data = data.menuList;
+
+                    this.data = data.page;
                 } else {
+
                     this.data = [];
                 }
             });
-        }
+        },
+        append(data) {
+            console.log(data);
+        },
+
+        remove(node, data) {
+            console.log(node);
+            console.log(data);
+        },
     },
 
     //计算属性 类似于 data 概念
