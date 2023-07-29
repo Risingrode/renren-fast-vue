@@ -20,6 +20,7 @@ import {
   MenuItem,
   MenuItemGroup,
   Input,
+  Image,
   InputNumber,
   Radio,
   RadioGroup,
@@ -94,6 +95,7 @@ Vue.use(Radio)
 Vue.use(RadioGroup)
 Vue.use(RadioButton)
 Vue.use(Checkbox)
+Vue.use(Image)
 Vue.use(CheckboxButton)
 Vue.use(CheckboxGroup)
 Vue.use(Switch)
