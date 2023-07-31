@@ -134,6 +134,7 @@ export default {
         // 新增 / 修改
         addOrUpdateHandle(id) {
             this.addOrUpdateVisible = true
+            // 通过 ref 属性调用子组件中的方法
             this.$nextTick(() => {
                 this.$refs.addOrUpdate.init(id)
             })
