@@ -4,6 +4,7 @@
         </el-switch>
         <el-button @click="banchSave" v-if="draggable">批量保存</el-button>
         <el-button @click="banchDelete" type="danger">批量删除</el-button>
+        <!-- 解释一下属性 -->
         <el-tree :data="data" :props="defaultProps" :expand-on-click-node="false" show-checkbox :node-key="catId"
             :default-expended-keys="expandedKey" draggable="true" :allow-drop="allowDrop" @node-drop="handleDrop"
             :draggable="draggable" ref="menuTree"><span class="custom-tree-node" slot-scope="{ node, data }">
@@ -32,12 +33,6 @@
                 <el-form-item label="计量单位">
                     <el-input v-model="category.productUnit" autocomplete="off"></el-input>
                 </el-form-item>
-                <!-- <el-form-item label="活动区域">
-                    <el-select v-model="category.region" placeholder="请选择活动区域">
-                        <el-option label="区域一" value="shanghai"></el-option>
-                        <el-option label="区域二" value="beijing"></el-option>
-                    </el-select>
-                </el-form-item> -->
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
@@ -97,6 +92,7 @@ export default {
         };
     },
     methods: {
+        // 批量保存
         banchSave() {
             // 3.发送请求
             // this.$http({
@@ -129,6 +125,7 @@ export default {
             //     });
             // });
         },
+        // 批量删除
         banchDelete() {
             let checkedNodes = this.$refs.menuTree.getCheckedNodes();
             console.log("被选中的节点:", checkedNodes);
@@ -165,6 +162,7 @@ export default {
         // handleNodeClick(data) {
         //     console.log(data);
         // },
+        // 拖拽节点
         // 参数说明: draggingNode: 当前拖拽的节点  dropNode: 当前放置的目标节点  dropType: 放置的位置
         handleDrop(draggingNode, dropNode, dropType, ev) {
             console.log("拖拽的父节点");
@@ -200,7 +198,6 @@ export default {
                 }
             }
             console.log("需要更新的节点是:", this.updateNodes);
-
         },
         // 递归遍历修改子节点的层级
         updateChildrenLevel(node) {
@@ -208,7 +205,6 @@ export default {
                 for (let i = 0; i < node.childNodes.length; i++) {
                     var cNode = node.childNodes[i].data;
                     this.updateNodes.push({ catId: cNode.catId, catLevel: node.childNodes[i].level });
-
                 }
                 this.updateChildrenLevel(node.childNodes[i]);
             }
